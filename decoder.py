@@ -37,8 +37,7 @@ def get_nparray_from_vector_buffer(vector_buffer):
     np_array = np.frombuffer(vector_buffer.bytes,
                              dtype=get_dtype(vector_buffer.component_type),
                              offset=vector_buffer.offset,
-                             count=vector_buffer.vector_count
-                                   * vector_buffer.components_per_vector)
+                             count=-1)
     shape =  (vector_buffer.vector_count, vector_buffer.components_per_vector)     
     strides = (vector_buffer.vector_stride,vector_buffer.component_stride)                         
     np_array = np.lib.stride_tricks.as_strided(np_array, shape, strides)
