@@ -34,6 +34,6 @@ Vertices - [[-1.46313    -1.25905001  1.50556004]
 Layout area - 8.956459999084473
 ```
 
-Please refer to [Proto definitions](./proto_defs.md) for schemas of the proto messages.
+Please refer to [Proto definitions](./proto_defs.md) for schemas of the proto messages. Please note, this is only to read the schema for documentation purposes **only**.
 
 

@@ -36,11 +36,12 @@ def get_dtype(component_type):
 def get_nparray_from_vector_buffer(vector_buffer):
     np_array = np.frombuffer(vector_buffer.bytes,
                              dtype=get_dtype(vector_buffer.component_type),
+                             offset=vector_buffer.offset,
                              count=vector_buffer.vector_count
                                    * vector_buffer.components_per_vector)
-    count = vector_buffer.vector_count
-    np_array = np_array.reshape(
-        (count, vector_buffer.components_per_vector))
+    shape =  (vector_buffer.vector_count, vector_buffer.components_per_vector)     
+    strides = (vector_buffer.vector_stride,vector_buffer.component_stride)                         
+    np_array = np.lib.stride_tricks.as_strided(np_array, shape, strides)
 
     return np_array
 
@@ -63,7 +64,13 @@ def decode_pbmesh(pbmesh_bytes):
         vertices = get_nparray_from_vector_buffer(mesh_buffer.vertices)
 
         if len(anchor_pose.rotation) != 0:
-            r = R.from_quat(anchor_pose.rotation)
+            r = np.eye(3)
+            if len(anchor_pose.rotation) == 3:
+                r = R.from_euler(anchor_pose.rotation)
+            if len(anchor_pose.rotation) == 4:
+                r = R.from_quat(anchor_pose.rotation)
+            else:
+                raise Exception("Invalid rotation vector length!")
             vertices = np.dot(vertices, np.transpose(r.as_matrix()))
         if len(anchor_pose.position) != 0:
             vertices = vertices + anchor_pose.position

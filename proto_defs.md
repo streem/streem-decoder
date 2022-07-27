@@ -2,6 +2,8 @@
 
 These are the protobuf message schemas for `pbmesh` and `pblayout`
 
+**NOTE:** Not for compiling. This is just for documentation purpose only. DO NOT build with these proto definitions. 
+
 ------  
 
 ```
