@@ -1,6 +1,6 @@
 ## Proto messages
 
-These are the protobug message structures for `pbmesh` and `pblayout`
+These are the protobuf message schemas for `pbmesh` and `pblayout`
 
 ------  
 

@@ -1,3 +1,4 @@
-numpy
-scipy
-trimesh
+numpy==1.22.3
+scipy==1.7.1
+trimesh==3.9.21
+protobuf==3.19.4

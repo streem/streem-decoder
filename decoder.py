@@ -3,6 +3,19 @@ from streem.room.ar import storage_pb2
 from streem.room import rooms_pb2
 from scipy.spatial.transform import Rotation as R
 import trimesh
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Streem proto message decoder')
+parser.add_argument('--input-mesh', dest='input_pbmesh', 
+                    default="data/mesh_1618312522461.pbmesh",
+                    type=str, help='Location of the input pbmesh file (defaults to pbmesh file in data folder)')
+parser.add_argument('--output-mesh', dest='output_obj',
+                    default="data/test.obj",
+                    type=str, help='Location of the output obj file to export (defaults to test.obj in data folder)')
+parser.add_argument('--input-pblayout', dest='input_pblayout', 
+                    default="data/layout_estimation.pblayout",
+                    type=str, help='Location of the input pblayout file (defaults to pblayout file in data folder)')
 
 def get_dtype(component_type):
     if (component_type == rooms_pb2.VectorBuffer.COMPONENT_TYPE_UINT32):
@@ -88,14 +101,19 @@ def decode_pbmesh_to_obj(pb_mesh_file_path, obj_path):
                     normals=mesh_components['normals'].tolist())
     with open(obj_path, 'w', encoding='utf-8') as f:
         mesh_t.export(f, file_type='obj')
+    print(f"Exported mesh to {obj_path}")
 
 def decode_pblayout(pb_layout_file_path):
 
     pblayout_bytes = getbytes_pb(pb_layout_file_path)
     layout_estimation_data = storage_pb2.LayoutEstimationData()
     layout_estimation_data.ParseFromString(pblayout_bytes)
+    vertices = get_nparray_from_vector_buffer(layout_estimation_data.layout_edge_vertices)
+    print(f"Vertices - {vertices}")
+    print(f"Layout area - {layout_estimation_data.area_square_meters}")
 
-    print(layout_estimation_data.area_square_meters)
+if __name__ == "__main__":
 
-mesh = decode_pbmesh_to_obj("mesh_1618312522461.pbmesh", "test.obj")
-decode_pblayout("layout_estimation.pblayout")
+    args = parser.parse_args()
+    decode_pbmesh_to_obj(args.input_pbmesh, args.output_obj)
+    decode_pblayout(args.input_pblayout)
